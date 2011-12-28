@@ -362,6 +362,11 @@ public final class MimeUtils {
         add("video/x-webex", "wrf");
         add("x-conference/x-cooltalk", "ice");
         add("x-epoc/x-sisx-app", "sisx");
+        add("video/mpeg", "vob");
+        add("video/mpeg", "ts");
+        add("video/x-flv", "f4v");
+        add("video/x-matroska", "mkv");
+        add("video/x-matroska", "webm");
         applyOverrides();
     }
 
