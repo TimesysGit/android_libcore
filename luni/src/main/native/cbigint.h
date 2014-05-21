@@ -19,7 +19,7 @@
 #define cbigint_h
 
 #include "JNIHelp.h"
-
+#include <endian.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <stdint.h>
