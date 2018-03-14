@@ -111,6 +111,19 @@ LOCAL_REQUIRED_MODULES := libjavacrypto
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
 include $(BUILD_JAVA_LIBRARY)
 
+# Create the fipscrypt library
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(call all-main-java-files-under,fipso)
+LOCAL_JAVA_LIBRARIES := core
+LOCAL_NO_STANDARD_LIBRARIES := true
+LOCAL_JAVACFLAGS := $(local_javac_flags)
+LOCAL_JARJAR_RULES := $(LOCAL_PATH)/fipso/jarjar-rules.txt
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := fipscrypt
+LOCAL_REQUIRED_MODULES := libjavacrypto-fips
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
+include $(BUILD_JAVA_LIBRARY)
+
 # Create the conscrypt library without jarjar for tests
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := $(call all-main-java-files-under,crypto)
@@ -119,6 +132,17 @@ LOCAL_NO_STANDARD_LIBRARIES := true
 LOCAL_JAVACFLAGS := $(local_javac_flags)
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := conscrypt-nojarjar
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
+include $(BUILD_STATIC_JAVA_LIBRARY)
+
+# Create the fipscrypt library without jarjar for tests
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(call all-main-java-files-under,fipso)
+LOCAL_JAVA_LIBRARIES := core
+LOCAL_NO_STANDARD_LIBRARIES := true
+LOCAL_JAVACFLAGS := $(local_javac_flags)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := fipscrypt-nojarjar
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
 include $(BUILD_STATIC_JAVA_LIBRARY)
 
@@ -163,6 +187,21 @@ LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := conscrypt-tests
 LOCAL_REQUIRED_MODULES := libjavacrypto
 LOCAL_JARJAR_RULES := $(LOCAL_PATH)/crypto/jarjar-rules.txt
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
+include $(BUILD_STATIC_JAVA_LIBRARY)
+
+# Make the fipscrypt-tests library.
+include $(CLEAR_VARS)
+LOCAL_SRC_FILES := $(call all-test-java-files-under,fipso)
+LOCAL_JAVA_RESOURCE_DIRS := $(test_resource_dirs)
+LOCAL_NO_STANDARD_LIBRARIES := true
+LOCAL_JAVA_LIBRARIES := bouncycastle core core-junit
+LOCAL_STATIC_JAVA_LIBRARIES := core-tests-support fipscrypt-nojarjar
+LOCAL_JAVACFLAGS := $(local_javac_flags)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := fipscrypt-tests
+LOCAL_REQUIRED_MODULES := libjavacrypto-fips
+LOCAL_JARJAR_RULES := $(LOCAL_PATH)/fipso/jarjar-rules.txt
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
 include $(BUILD_STATIC_JAVA_LIBRARY)
 endif

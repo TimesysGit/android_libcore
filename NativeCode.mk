@@ -106,6 +106,23 @@ LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/NativeCode.mk
 include external/stlport/libstlport.mk
 include $(BUILD_SHARED_LIBRARY)
 
+# Platform fipscrypt crypto library
+include $(CLEAR_VARS)
+LOCAL_CFLAGS += $(core_cflags)
+LOCAL_CFLAGS += -DJNI_JARJAR_PREFIX="com/android/"
+LOCAL_CPPFLAGS += $(core_cppflags)
+LOCAL_SRC_FILES := \
+        fipso/src/main/native/org_fipscrypt_NativeCrypto.cpp
+LOCAL_C_INCLUDES += $(core_c_includes) \
+        libcore/luni/src/main/native
+LOCAL_SHARED_LIBRARIES += $(core_shared_libraries) libcrypto-fips libssl-fips libnativehelper libz libjavacore
+LOCAL_STATIC_LIBRARIES += $(core_static_libraries)
+LOCAL_MODULE_TAGS := optional
+LOCAL_MODULE := libjavacrypto-fips
+LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/NativeCode.mk
+include external/stlport/libstlport.mk
+include $(BUILD_SHARED_LIBRARY)
+
 # Test JNI library.
 ifeq ($(LIBCORE_SKIP_TESTS),)
 

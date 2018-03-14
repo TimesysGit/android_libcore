@@ -1,0 +1,1 @@
+rule org.fipscrypt.** com.android.@0
