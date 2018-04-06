@@ -1,47 +1,42 @@
 package at.favre.lib.crypto;
 
-import org.junit.Test;
-
 import javax.crypto.Mac;
 import java.security.Security;
+import junit.framework.TestCase;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
-public class HkdfMacFactoryTest {
-    @Test
-    public void hmacSha256() throws Exception {
+public class HkdfMacFactoryTest extends TestCase {
+    public void test_hmacSha256() throws Exception {
         testHmacFactory(HkdfMacFactory.Default.hmacSha256(), 32);
     }
 
-    @Test
-    public void hmacSha512() throws Exception {
+    public void test_hmacSha512() throws Exception {
         testHmacFactory(HkdfMacFactory.Default.hmacSha512(), 64);
     }
 
-    @Test
-    public void hmacSha1() throws Exception {
+    public void test_hmacSha1() throws Exception {
         testHmacFactory(HkdfMacFactory.Default.hmacSha1(), 20);
     }
 
-    @Test
-    public void hmacMd5() throws Exception {
+    public void test_hmacMd5() throws Exception {
         testHmacFactory(new HkdfMacFactory.Default("HmacMD5"), 16);
     }
 
-    @Test
-    public void customProvider() throws Exception {
+    public void test_customProvider() throws Exception {
         testHmacFactory(new HkdfMacFactory.Default("HmacSHA1", Security.getProvider("SunJCE")), 20);
     }
 
-    @Test(expected = RuntimeException.class)
-    public void hmacInstanceNotExisting() throws Exception {
-        new HkdfMacFactory.Default("HmacNotExisting", null).createInstance(new byte[16]);
+    public void test_hmacInstanceNotExisting() throws Exception {
+        try {
+            new HkdfMacFactory.Default("HmacNotExisting", null).createInstance(new byte[16]);
+            fail();
+        } catch(RuntimeException expected) { }
     }
 
-    @Test(expected = RuntimeException.class)
-    public void hmacUsingEmptyKey() throws Exception {
-        HkdfMacFactory.Default.hmacSha256().createInstance(new byte[0]);
+    public void test_hmacUsingEmptyKey() throws Exception {
+        try {
+            HkdfMacFactory.Default.hmacSha256().createInstance(new byte[0]);
+            fail();
+        } catch(RuntimeException expected) { }
     }
 
     private void testHmacFactory(HkdfMacFactory macFactory, int refLength) {

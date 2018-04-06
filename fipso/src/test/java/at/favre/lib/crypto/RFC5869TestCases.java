@@ -1,17 +1,16 @@
 package at.favre.lib.crypto;
 
 import org.apache.commons.codec.binary.Hex;
-import org.junit.Test;
+import java.util.Arrays;
 
-import static org.junit.Assert.assertArrayEquals;
+import junit.framework.TestCase;
 
 /**
  * See https://tools.ietf.org/html/rfc5869#appendix-A - Test Vectors
  */
-public class RFC5869TestCases {
+public class RFC5869TestCases extends TestCase {
 
-    @Test
-    public void rfc5869testCase1() throws Exception {
+    public void test_rfc5869testCase1() throws Exception {
         String PRK = "077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3122ec844ad7c2b3e5";
         checkStep1Sha256("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
                 "000102030405060708090a0b0c", PRK);
@@ -20,8 +19,7 @@ public class RFC5869TestCases {
                 "3cb25f25faacd57a90434f64d0362f2a2d2d0a90cf1a5a4c5db02d56ecc4c5bf34007208d5b887185865");
     }
 
-    @Test
-    public void rfc5869testCase2() throws Exception {
+    public void test_rfc5869testCase2() throws Exception {
         String PRK = "06a6b88c5853361a06104c9ceb35b45cef760014904671014a193f40c15fc244";
 
         checkStep1Sha256("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f" +
@@ -36,8 +34,7 @@ public class RFC5869TestCases {
                 "b41c65e590e09da3275600c2f09b8367793a9aca3db71cc30c58179ec3e87c14c01d5c1f3434f1d87");
     }
 
-    @Test
-    public void rfc5869testCase3() throws Exception {
+    public void test_rfc5869testCase3() throws Exception {
         String IKM = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b";
         String salt = "";
         String info = "";
@@ -49,8 +46,7 @@ public class RFC5869TestCases {
         checkStep2Sha256(PRK, info, L, OKM);
     }
 
-    @Test
-    public void rfc5869testCase4() throws Exception {
+    public void test_rfc5869testCase4() throws Exception {
         String IKM = "0b0b0b0b0b0b0b0b0b0b0b";
         String salt = "000102030405060708090a0b0c";
         String info = "f0f1f2f3f4f5f6f7f8f9";
@@ -62,8 +58,7 @@ public class RFC5869TestCases {
         checkStep2Sha1(PRK, info, L, OKM);
     }
 
-    @Test
-    public void rfc5869testCase5() throws Exception {
+    public void test_rfc5869testCase5() throws Exception {
         String IKM = "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f" +
                 "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f" +
                 "404142434445464748494a4b4c4d4e4f";
@@ -83,8 +78,7 @@ public class RFC5869TestCases {
         checkStep2Sha1(PRK, info, L, OKM);
     }
 
-    @Test
-    public void rfc5869testCase6() throws Exception {
+    public void test_rfc5869testCase6() throws Exception {
         String IKM = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b";
         String salt = "";
         String info = "";
@@ -98,8 +92,7 @@ public class RFC5869TestCases {
         checkStep2Sha1(PRK, info, L, OKM);
     }
 
-    @Test
-    public void rfc5869testCase7() throws Exception {
+    public void test_rfc5869testCase7() throws Exception {
         String IKM = "0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c0c";
         String salt = "";
         String info = "";
@@ -113,8 +106,7 @@ public class RFC5869TestCases {
         checkStep2Sha1(PRK, info, L, OKM);
     }
 
-    @Test
-    public void inOfficialTestCase1Sha512() throws Exception {
+    public void test_inOfficialTestCase1Sha512() throws Exception {
         String PRK = "665799823737DED04A88E47E54A5890BB2C3D247C7A4254A8E61350723590A26C36238127D8661B88CF80EF802D57E2F7CEBCF1E00E083848BE19929C61B4237";
         checkStep1Sha512("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b",
                 "000102030405060708090a0b0c", PRK);
@@ -150,12 +142,12 @@ public class RFC5869TestCases {
     private void checkStep1(HkdfMacFactory macFactory, String ikm, String salt, String prk) throws Exception {
         byte[] currentPrk = HKDF.from(macFactory).extract(Hex.decodeHex(salt.toCharArray()),
                 Hex.decodeHex(ikm.toCharArray()));
-        assertArrayEquals(Hex.decodeHex(prk.toCharArray()), currentPrk);
+        assertEquals(Arrays.toString(Hex.decodeHex(prk.toCharArray())), Arrays.toString(currentPrk));
     }
 
     private void checkStep2(HkdfMacFactory macFactory, String prk, String info, int l, String okm) throws Exception {
         byte[] currentOkm = HKDF.from(macFactory).expand(Hex.decodeHex(prk.toCharArray()),
                 Hex.decodeHex(info.toCharArray()), l);
-        assertArrayEquals(Hex.decodeHex(okm.toCharArray()), currentOkm);
+        assertEquals(Arrays.toString(Hex.decodeHex(okm.toCharArray())), Arrays.toString(currentOkm));
     }
 }
