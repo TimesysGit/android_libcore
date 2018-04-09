@@ -1,6 +1,5 @@
 package at.favre.lib.crypto;
 
-import org.apache.commons.codec.binary.Hex;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -9,6 +8,17 @@ import junit.framework.TestCase;
  * See https://tools.ietf.org/html/rfc5869#appendix-A - Test Vectors
  */
 public class RFC5869TestCases extends TestCase {
+
+    private static byte[] decodeHex(char[] s) throws Exception {
+        if ((s.length & 1) != 0)
+            throw new Exception("Odd number of hexadecimal digits");
+
+        byte[] r = new byte[s.length/2];
+        for (int i=0, p=0; p<r.length; i+= 2, p++) {
+            r[p] = (byte)Integer.parseInt(new String(new char[]{s[i], s[i+1]}), 16);
+        }
+        return r;
+    }
 
     public void test_rfc5869testCase1() throws Exception {
         String PRK = "077709362c2e32df0ddc3f0dc47bba6390b6c73bb50f9c3122ec844ad7c2b3e5";
@@ -140,14 +150,14 @@ public class RFC5869TestCases extends TestCase {
     }
 
     private void checkStep1(HkdfMacFactory macFactory, String ikm, String salt, String prk) throws Exception {
-        byte[] currentPrk = HKDF.from(macFactory).extract(Hex.decodeHex(salt.toCharArray()),
-                Hex.decodeHex(ikm.toCharArray()));
-        assertEquals(Arrays.toString(Hex.decodeHex(prk.toCharArray())), Arrays.toString(currentPrk));
+        byte[] currentPrk = HKDF.from(macFactory).extract(decodeHex(salt.toCharArray()),
+                decodeHex(ikm.toCharArray()));
+        assertEquals(Arrays.toString(decodeHex(prk.toCharArray())), Arrays.toString(currentPrk));
     }
 
     private void checkStep2(HkdfMacFactory macFactory, String prk, String info, int l, String okm) throws Exception {
-        byte[] currentOkm = HKDF.from(macFactory).expand(Hex.decodeHex(prk.toCharArray()),
-                Hex.decodeHex(info.toCharArray()), l);
-        assertEquals(Arrays.toString(Hex.decodeHex(okm.toCharArray())), Arrays.toString(currentOkm));
+        byte[] currentOkm = HKDF.from(macFactory).expand(decodeHex(prk.toCharArray()),
+                decodeHex(info.toCharArray()), l);
+        assertEquals(Arrays.toString(decodeHex(okm.toCharArray())), Arrays.toString(currentOkm));
     }
 }
