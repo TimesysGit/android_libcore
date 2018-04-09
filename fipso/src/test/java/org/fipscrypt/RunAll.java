@@ -20,6 +20,9 @@ public class RunAll {
 		"com.android.org.fipscrypt.SignatureTest",
 		"com.android.org.fipscrypt.TrustedCertificateStoreTest",
 		"com.android.org.fipscrypt.TrustManagerImplTest",
+		"at.favre.lib.crypto.HkdfMacFactoryTest",
+		"at.favre.lib.crypto.HKDFTest",
+		"at.favre.lib.crypto.RFC5869TestCases",
 	};
 
 	public RunAll() {
