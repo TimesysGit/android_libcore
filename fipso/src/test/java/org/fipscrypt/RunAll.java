@@ -1,7 +1,10 @@
 package org.fipscrypt;
 
 import java.lang.reflect.Method;
+import java.security.Security;
 import junit.framework.TestCase;
+import junit.framework.TestFailure;
+import junit.framework.TestResult;
 
 public class RunAll {
 	private static final String[] ALL_CLASSES = new String[] {
@@ -27,22 +30,30 @@ public class RunAll {
 		try {
 			t = (TestCase)c.newInstance();
 		} catch(Exception e) {
-			System.err.println(c.getName() + " FAILED: " + e);
+			System.err.println(c.getName() + " ERROR: " + e);
 			return false;
 		}
 
 		t.setName(funcName);
 
 		try {
-			t.run();
+			TestResult tr = t.run();
+			if (!tr.wasSuccessful()) {
+				java.util.Enumeration<TestFailure> tf;
+				System.out.println(c.getName() + ":" + funcName + " FAILED!");
+				for (tf=tr.failures(); tf.hasMoreElements(); )
+					System.out.println(tf.nextElement().exceptionMessage());
+				for (tf=tr.errors(); tf.hasMoreElements(); )
+					System.out.println(tf.nextElement().exceptionMessage());
+				return false;
+			}
 		} catch(Exception e) {
 			System.out.println(c.getName() + ":" + funcName +
-				" FAILED!");
+				" ERROR!");
 			return false;
-		} finally {
-			System.out.println(c.getName() + ":" + funcName +
-				" Success");
 		}
+
+		System.out.println(c.getName() + ":" + funcName + " Success");
 
 		return true;
 	}
