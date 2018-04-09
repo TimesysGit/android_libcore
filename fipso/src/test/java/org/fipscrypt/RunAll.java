@@ -13,6 +13,7 @@ public class RunAll {
 		"com.android.org.fipscrypt.CipherSuiteTest",
 		"com.android.org.fipscrypt.ClientSessionContextTest",
 		"com.android.org.fipscrypt.FileClientSessionCacheTest",
+		"com.android.org.fipscrypt.FIPSTest",
 		"com.android.org.fipscrypt.MacTest",
 		"com.android.org.fipscrypt.NativeCryptoTest",
 		"com.android.org.fipscrypt.OpenSSLSignatureTest",
