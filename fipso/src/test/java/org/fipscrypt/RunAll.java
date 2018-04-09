@@ -104,6 +104,12 @@ public class RunAll {
 
 		System.out.println("!!!! Starting Crypto Tests !!!!");
 
+		// Set a temporary directory that exists in Android
+		System.setProperty("java.io.tmpdir", "/mnt/shm");
+		// Use FIPS provider instead of vanilla OpenSSL
+		Security.setProperty("security.provider.1", "com.android.org.fipscrypt.OpenSSLFIPSProvider");
+
+		// Handle arguments or run the default (i.e. all tests)
 		if (args.length == 0)
 			result = RunAll.processList(RunAll.ALL_CLASSES);
 		else
