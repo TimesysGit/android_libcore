@@ -1,11 +1,11 @@
 package at.favre.lib.crypto;
 
-import org.apache.commons.lang3.RandomUtils;
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.security.Security;
 import java.util.Arrays;
 import java.util.Random;
@@ -15,6 +15,13 @@ import java.util.concurrent.TimeUnit;
 import junit.framework.TestCase;
 
 public class HKDFTest extends TestCase {
+    private Random rng = new SecureRandom();
+    private byte[] getNextRandomBytes(int len) {
+        byte[] r = new byte[len];
+        rng.nextBytes(r);
+        return r;
+    }
+
     public void test_quickStarTest() throws Exception {
         byte[] lowEntropyInput = new byte[]{0x62, 0x58, (byte) 0x84, 0x2C};
 
@@ -74,8 +81,8 @@ public class HKDFTest extends TestCase {
         byte[] salt;
 
         for (int i : counts) {
-            ikm = RandomUtils.nextBytes(i);
-            salt = RandomUtils.nextBytes(i * 2);
+            ikm = getNextRandomBytes(i);
+            salt = getNextRandomBytes(i * 2);
             checkLength(HKDF.fromHmacSha256().extract(salt, ikm), 32);
             checkLength(HKDF.fromHmacSha256().extract(null, ikm), 32);
             checkLength(HKDF.fromHmacSha256().extract(new byte[0], ikm), 32);
@@ -95,7 +102,7 @@ public class HKDFTest extends TestCase {
 
     public void testExtractFailures() throws Exception {
         try {
-            HKDF.fromHmacSha256().extract(RandomUtils.nextBytes(10), null);
+            HKDF.fromHmacSha256().extract(getNextRandomBytes(10), null);
             fail();
         } catch (Exception ignored) {
         }
@@ -114,8 +121,8 @@ public class HKDFTest extends TestCase {
         byte[] info;
         for (int lengthPrk : lengthsPrk) {
             for (int lengthOut : lengthsOut) {
-                prk = RandomUtils.nextBytes(lengthPrk);
-                info = RandomUtils.nextBytes(lengthPrk);
+                prk = getNextRandomBytes(lengthPrk);
+                info = getNextRandomBytes(lengthPrk);
                 checkLength(HKDF.fromHmacSha256().expand(prk, info, lengthOut), lengthOut);
                 checkLength(HKDF.fromHmacSha256().expand(prk, null, lengthOut), lengthOut);
                 checkLength(HKDF.fromHmacSha256().expand(prk, new byte[0], lengthOut), lengthOut);
@@ -134,38 +141,38 @@ public class HKDFTest extends TestCase {
 
     public void testExpandFailures() throws Exception {
         try {
-            HKDF.fromHmacSha256().expand(null, RandomUtils.nextBytes(10), 16);
+            HKDF.fromHmacSha256().expand(null, getNextRandomBytes(10), 16);
             fail();
         } catch (Exception ignored) {
         }
 
         try {
-            HKDF.fromHmacSha256().expand(RandomUtils.nextBytes(16), RandomUtils.nextBytes(8), 0);
+            HKDF.fromHmacSha256().expand(getNextRandomBytes(16), getNextRandomBytes(8), 0);
             fail();
         } catch (Exception ignored) {
         }
 
         try {
-            HKDF.fromHmacSha256().expand(new byte[0], RandomUtils.nextBytes(8), 16);
+            HKDF.fromHmacSha256().expand(new byte[0], getNextRandomBytes(8), 16);
             fail();
         } catch (Exception ignored) {
         }
 
         try {
-            HKDF.fromHmacSha256().expand(RandomUtils.nextBytes(16), RandomUtils.nextBytes(8), 256 * 32);
+            HKDF.fromHmacSha256().expand(getNextRandomBytes(16), getNextRandomBytes(8), 256 * 32);
             fail();
         } catch (Exception ignored) {
         }
     }
 
     public void test_extractAndExpand() throws Exception {
-        checkLength(HKDF.from(HkdfMacFactory.Default.hmacSha1()).extractAndExpand(RandomUtils.nextBytes(20), RandomUtils.nextBytes(16), null, 80), 80);
-        checkLength(HKDF.fromHmacSha256().extractAndExpand(RandomUtils.nextBytes(32), RandomUtils.nextBytes(16), null, 80), 80);
-        checkLength(HKDF.fromHmacSha512().extractAndExpand(RandomUtils.nextBytes(64), RandomUtils.nextBytes(250), null, 80), 80);
+        checkLength(HKDF.from(HkdfMacFactory.Default.hmacSha1()).extractAndExpand(getNextRandomBytes(20), getNextRandomBytes(16), null, 80), 80);
+        checkLength(HKDF.fromHmacSha256().extractAndExpand(getNextRandomBytes(32), getNextRandomBytes(16), null, 80), 80);
+        checkLength(HKDF.fromHmacSha512().extractAndExpand(getNextRandomBytes(64), getNextRandomBytes(250), null, 80), 80);
     }
 
     public void testLongInputExpand() throws Exception {
-        byte[] longInput = RandomUtils.nextBytes(1024 * 1024); //1 MiB
+        byte[] longInput = getNextRandomBytes(1024 * 1024); //1 MiB
         checkLength(HKDF.fromHmacSha256().extract(null, longInput), 32);
     }
 
@@ -194,8 +201,8 @@ public class HKDFTest extends TestCase {
 
                         Thread.sleep(r.nextInt(5));
 
-                        byte[] ikm = RandomUtils.nextBytes(r.nextInt(12) + 12);
-                        byte[] salt = RandomUtils.nextBytes(r.nextInt(32));
+                        byte[] ikm = getNextRandomBytes(r.nextInt(12) + 12);
+                        byte[] salt = getNextRandomBytes(r.nextInt(32));
                         byte[] prk = hkdf.extract(salt, ikm);
 
                         assertTrue(hkdf.getMacFactory().createInstance(new byte[1]).getMacLength() == prk.length);
