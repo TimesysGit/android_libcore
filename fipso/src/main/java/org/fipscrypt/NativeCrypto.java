@@ -1073,4 +1073,6 @@ public final class NativeCrypto {
     }
 
     public static native long ERR_peek_last_error();
+
+    public static native int FIPS_mode();
 }

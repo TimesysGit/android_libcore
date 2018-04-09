@@ -37,6 +37,7 @@
 #include <jni.h>
 
 #include <openssl/asn1t.h>
+#include <openssl/crypto.h>
 #include <openssl/dsa.h>
 #include <openssl/engine.h>
 #include <openssl/err.h>
@@ -7972,6 +7973,10 @@ static jlong NativeCrypto_ERR_peek_last_error(JNIEnv*, jclass) {
     return ERR_peek_last_error();
 }
 
+static jint NativeCrypto_FIPS_mode(JNIEnv*, jclass) {
+    return FIPS_mode();
+}
+
 #define FILE_DESCRIPTOR "Ljava/io/FileDescriptor;"
 #define SSL_CALLBACKS "L" TO_STRING(JNI_JARJAR_PREFIX) "org/fipscrypt/NativeCrypto$SSLHandshakeCallbacks;"
 static JNINativeMethod sNativeCryptoMethods[] = {
@@ -8188,6 +8193,7 @@ static JNINativeMethod sNativeCryptoMethods[] = {
     NATIVE_METHOD(NativeCrypto, SSL_CTX_set_alpn_protos, "(J[B)I"),
     NATIVE_METHOD(NativeCrypto, SSL_get0_alpn_selected, "(J)[B"),
     NATIVE_METHOD(NativeCrypto, ERR_peek_last_error, "()J"),
+    NATIVE_METHOD(NativeCrypto, FIPS_mode, "()I"),
 };
 
 static void initialize_fipscrypt(JNIEnv* env) {
