@@ -95,12 +95,6 @@ public final class OpenSSLFIPSProvider extends Provider {
         put("KeyAgreement.ECDH", prefix + "OpenSSLECDHKeyAgreement");
 
         /* == Signatures == */
-        put("Signature.MD5WithRSA", prefix + "OpenSSLSignature$MD5RSA");
-        put("Alg.Alias.Signature.MD5WithRSAEncryption", "MD5WithRSA");
-        put("Alg.Alias.Signature.MD5/RSA", "MD5WithRSA");
-        put("Alg.Alias.Signature.1.2.840.113549.1.1.4", "MD5WithRSA");
-        put("Alg.Alias.Signature.1.2.840.113549.2.5with1.2.840.113549.1.1.1", "MD5WithRSA");
-
         put("Signature.SHA1WithRSA", prefix + "OpenSSLSignature$SHA1RSA");
         put("Alg.Alias.Signature.SHA1WithRSAEncryption", "SHA1WithRSA");
         put("Alg.Alias.Signature.SHA1/RSA", "SHA1WithRSA");
@@ -201,8 +195,6 @@ public final class OpenSSLFIPSProvider extends Provider {
         put("Cipher.DESEDE/ECB/PKCS5Padding", prefix + "OpenSSLCipher$DESEDE$ECB$PKCS5Padding");
         put("Cipher.DESEDE/OFB/NoPadding", prefix + "OpenSSLCipher$DESEDE$OFB$NoPadding");
         put("Cipher.DESEDE/OFB/PKCS5Padding", prefix + "OpenSSLCipher$DESEDE$OFB$PKCS5Padding");
-
-        put("Cipher.ARC4", prefix + "OpenSSLCipher$ARC4");
 
         /* === Mac === */
 

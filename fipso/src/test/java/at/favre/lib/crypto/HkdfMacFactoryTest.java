@@ -18,7 +18,11 @@ public class HkdfMacFactoryTest extends TestCase {
     }
 
     public void test_hmacMd5() throws Exception {
-        testHmacFactory(new HkdfMacFactory.Default("HmacMD5"), 16);
+        try {
+            testHmacFactory(new HkdfMacFactory.Default("HmacMD5"), 16);
+            fail();
+        } catch (Exception expected) {
+        }
     }
 
     public void test_customProvider() throws Exception {

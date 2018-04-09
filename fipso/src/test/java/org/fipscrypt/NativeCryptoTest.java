@@ -181,7 +181,7 @@ public class NativeCryptoTest extends TestCase {
         }
 
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(512);
+        kpg.initialize(1024);
 
         KeyPair kp1 = kpg.generateKeyPair();
         RSAPrivateCrtKey privKey1 = (RSAPrivateCrtKey) kp1.getPrivate();
@@ -561,9 +561,9 @@ public class NativeCryptoTest extends TestCase {
             // empty
             "",
             // never standardized
-            "EXP1024-DES-CBC-SHA", "EXP1024-RC4-SHA", "DHE-DSS-RC4-SHA",
+            "EXP1024-DES-CBC-SHA", // "EXP1024-RC4-SHA", "DHE-DSS-RC4-SHA",
             // IDEA
-            "IDEA-CBC-SHA", "IDEA-CBC-MD5"
+            "IDEA-CBC-SHA", //"IDEA-CBC-MD5"
         };
 
         for (String illegal : illegals) {
@@ -613,7 +613,7 @@ public class NativeCryptoTest extends TestCase {
             // without this SSL_set_cipher_lists call the tests were
             // negotiating DHE-RSA-AES256-SHA by default which had
             // very slow ephemeral RSA key generation
-            NativeCrypto.SSL_set_cipher_lists(s, new String[] { "RC4-MD5" });
+            //NativeCrypto.SSL_set_cipher_lists(s, new String[] { "RC4-MD5" });
 
             if (channelIdPrivateKey != null) {
                 NativeCrypto.SSL_set1_tls_channel_id(s, channelIdPrivateKey.getPkeyContext());
@@ -845,7 +845,7 @@ public class NativeCryptoTest extends TestCase {
         assertTrue(clientCallback.verifyCertificateChainCalled);
         assertEqualCertificateChains(getServerCertificates(),
                                      clientCallback.asn1DerEncodedCertificateChain);
-        assertEquals("RSA", clientCallback.authMethod);
+        assertEquals("ECDHE_RSA", clientCallback.authMethod);
         assertFalse(serverCallback.verifyCertificateChainCalled);
         assertFalse(clientCallback.clientCertificateRequestedCalled);
         assertFalse(serverCallback.clientCertificateRequestedCalled);
@@ -881,11 +881,11 @@ public class NativeCryptoTest extends TestCase {
         assertTrue(clientCallback.verifyCertificateChainCalled);
         assertEqualCertificateChains(getServerCertificates(),
                                      clientCallback.asn1DerEncodedCertificateChain);
-        assertEquals("RSA", clientCallback.authMethod);
+        assertEquals("ECDHE_RSA", clientCallback.authMethod);
         assertTrue(serverCallback.verifyCertificateChainCalled);
         assertEqualCertificateChains(getClientCertificates(),
                 serverCallback.asn1DerEncodedCertificateChain);
-        assertEquals("RSA", serverCallback.authMethod);
+        assertEquals("ECDHE_RSA", serverCallback.authMethod);
 
         assertTrue(clientCallback.clientCertificateRequestedCalled);
         assertNotNull(clientCallback.keyTypes);
@@ -1057,7 +1057,7 @@ public class NativeCryptoTest extends TestCase {
         assertTrue(clientCallback.verifyCertificateChainCalled);
         assertEqualCertificateChains(getServerCertificates(),
                                      clientCallback.asn1DerEncodedCertificateChain);
-        assertEquals("RSA", clientCallback.authMethod);
+        assertEquals("ECDHE_RSA", clientCallback.authMethod);
         assertFalse(serverCallback.verifyCertificateChainCalled);
         assertFalse(clientCallback.clientCertificateRequestedCalled);
         assertFalse(serverCallback.clientCertificateRequestedCalled);
@@ -1083,7 +1083,7 @@ public class NativeCryptoTest extends TestCase {
         assertTrue(clientCallback.verifyCertificateChainCalled);
         assertEqualCertificateChains(getServerCertificates(),
                                      clientCallback.asn1DerEncodedCertificateChain);
-        assertEquals("RSA", clientCallback.authMethod);
+        assertEquals("ECDHE_RSA", clientCallback.authMethod);
         assertFalse(serverCallback.verifyCertificateChainCalled);
         assertFalse(clientCallback.clientCertificateRequestedCalled);
         assertFalse(serverCallback.clientCertificateRequestedCalled);
@@ -1109,7 +1109,7 @@ public class NativeCryptoTest extends TestCase {
         assertTrue(clientCallback.verifyCertificateChainCalled);
         assertEqualCertificateChains(getServerCertificates(),
                                      clientCallback.asn1DerEncodedCertificateChain);
-        assertEquals("RSA", clientCallback.authMethod);
+        assertEquals("ECDHE_RSA", clientCallback.authMethod);
         assertFalse(serverCallback.verifyCertificateChainCalled);
         assertFalse(clientCallback.clientCertificateRequestedCalled);
         assertFalse(serverCallback.clientCertificateRequestedCalled);
@@ -2046,7 +2046,7 @@ public class NativeCryptoTest extends TestCase {
         // consistent with the output.
         X500Principal name = new X500Principal("CN=localhost");
         assertEquals(-1372642656, NativeCrypto.X509_NAME_hash(name)); // SHA1
-        assertEquals(-1626170662, NativeCrypto.X509_NAME_hash_old(name)); // MD5
+        //assertEquals(-1626170662, NativeCrypto.X509_NAME_hash_old(name)); // MD5
     }
 
     public void test_ENGINE_by_id_Failure() throws Exception {
@@ -2369,11 +2369,11 @@ public class NativeCryptoTest extends TestCase {
             }
         }
 
-        // Real key with minimum bit size (should be 512 bits)
+        // Real key with minimum FIPS-permitted bit size
         {
             long ctx = 0;
             try {
-                ctx = NativeCrypto.DSA_generate_key(0, null, null, null, null);
+                ctx = NativeCrypto.DSA_generate_key(1024, null, null, null, null);
                 assertTrue(ctx != NULL);
             } finally {
                 if (ctx != 0) {
@@ -2386,10 +2386,26 @@ public class NativeCryptoTest extends TestCase {
         {
             long ctx = 0;
             try {
-                ctx = NativeCrypto.DSA_generate_key(0, null, new byte[] {}, new byte[] {},
+                ctx = NativeCrypto.DSA_generate_key(1024, null, new byte[] {}, new byte[] {},
                         new byte[] {});
-                fail();
-            } catch (RuntimeException expected) {
+                assertTrue(ctx == NULL);
+            } catch (Exception expected) {
+                // We expect a failure of some sort
+            } finally {
+                if (ctx != 0) {
+                    NativeCrypto.EVP_PKEY_free(ctx);
+                }
+            }
+        }
+
+        // Real key with minimum bit size (should be 512 bits, non-FIPS)
+        {
+            long ctx = 0;
+            try {
+                ctx = NativeCrypto.DSA_generate_key(0, null, null, null, null);
+                assertTrue(ctx == NULL);
+            } catch (Exception e) {
+                // We expect a failure of some sort
             } finally {
                 if (ctx != 0) {
                     NativeCrypto.EVP_PKEY_free(ctx);

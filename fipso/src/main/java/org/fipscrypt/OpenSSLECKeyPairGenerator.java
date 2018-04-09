@@ -30,15 +30,12 @@ import java.util.Map;
 public final class OpenSSLECKeyPairGenerator extends KeyPairGenerator {
     private static final String ALGORITHM = "EC";
 
-    private static final int DEFAULT_KEY_SIZE = 192;
+    private static final int DEFAULT_KEY_SIZE = 384;
 
     private static final Map<Integer, String> SIZE_TO_CURVE_NAME = new HashMap<Integer, String>();
 
     static {
         /* NIST curves */
-        SIZE_TO_CURVE_NAME.put(192, "prime192v1");
-        SIZE_TO_CURVE_NAME.put(224, "secp224r1");
-        SIZE_TO_CURVE_NAME.put(256, "prime256v1");
         SIZE_TO_CURVE_NAME.put(384, "secp384r1");
         SIZE_TO_CURVE_NAME.put(521, "secp521r1");
     }

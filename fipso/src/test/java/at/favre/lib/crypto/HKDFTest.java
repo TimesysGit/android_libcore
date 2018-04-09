@@ -89,7 +89,7 @@ public class HKDFTest extends TestCase {
             checkLength(HKDF.fromHmacSha512().extract(salt, ikm), 64);
             checkLength(HKDF.fromHmacSha512().extract(null, ikm), 64);
             checkLength(HKDF.from(HkdfMacFactory.Default.hmacSha1()).extract(salt, ikm), 20);
-            checkLength(HKDF.from(new HkdfMacFactory.Default("HmacMD5")).extract(ikm, salt), 16);
+            //checkLength(HKDF.from(new HkdfMacFactory.Default("HmacMD5")).extract(ikm, salt), 16);
 
             assertFalse(Arrays.equals(HKDF.fromHmacSha256().extract(salt, ikm), HKDF.fromHmacSha512().extract(salt, ikm)));
             assertFalse(Arrays.equals(HKDF.fromHmacSha256().extract(salt, ikm), HKDF.from(HkdfMacFactory.Default.hmacSha1()).extract(salt, ikm)));
@@ -129,7 +129,7 @@ public class HKDFTest extends TestCase {
                 checkLength(HKDF.fromHmacSha512().expand(prk, info, lengthOut), lengthOut);
                 checkLength(HKDF.fromHmacSha512().expand(prk, null, lengthOut), lengthOut);
                 checkLength(HKDF.from(HkdfMacFactory.Default.hmacSha1()).expand(prk, info, lengthOut), lengthOut);
-                checkLength(HKDF.from(new HkdfMacFactory.Default("HmacMD5")).expand(prk, info, lengthOut), lengthOut);
+                //checkLength(HKDF.from(new HkdfMacFactory.Default("HmacMD5")).expand(prk, info, lengthOut), lengthOut);
 
                 if (lengthOut > 4) {
                     assertFalse(Arrays.equals(HKDF.fromHmacSha256().expand(prk, info, lengthOut), HKDF.fromHmacSha512().expand(prk, info, lengthOut)));

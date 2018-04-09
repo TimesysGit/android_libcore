@@ -24,7 +24,6 @@ public class OpenSSLSignatureTest extends TestCase {
     public void test_getInstance() throws Exception {
         try {
             OpenSSLSignature.getInstance("SHA1WITHDSA");
-            OpenSSLSignature.getInstance("MD5WITHRSAENCRYPTION");
             OpenSSLSignature.getInstance("SHA1WITHRSAENCRYPTION");
             OpenSSLSignature.getInstance("SHA256WITHRSAENCRYPTION");
             OpenSSLSignature.getInstance("SHA384WITHRSAENCRYPTION");
