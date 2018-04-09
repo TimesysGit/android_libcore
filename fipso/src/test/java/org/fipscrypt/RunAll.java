@@ -25,6 +25,16 @@ public class RunAll {
 		"at.favre.lib.crypto.RFC5869TestCases",
 	};
 
+	static class TestCounter {
+		public int passes = 0;
+		public int total = 0;
+		public TestCounter() { }
+		public void add(TestCounter tc) {
+			this.passes+= tc.passes;
+			this.total+= tc.total;
+		}
+	}
+
 	public RunAll() {
 		// do nothing
 	}
@@ -62,7 +72,8 @@ public class RunAll {
 		return true;
 	}
 
-	private static final boolean processClass(String className) {
+	private static final TestCounter processClass(String className) {
+		TestCounter res = new TestCounter();
 		Class c;
 		Method[] functionList;
 
@@ -71,10 +82,8 @@ public class RunAll {
 			functionList = c.getDeclaredMethods();
 		} catch(Exception e) {
 			System.err.println(e);
-			return false;
+			return res;
 		}
-
-		boolean res = true;
 
 		for (int i=0; i<functionList.length; i++) {
 			final Method m = functionList[i];
@@ -82,25 +91,28 @@ public class RunAll {
 			if (m.getReturnType() == void.class &&
 			    m.getParameterTypes().length == 0) {
 				final String name = m.getName();
-				if (name.startsWith("test"))
-					res&= processTest(c, name);
+				if (name.startsWith("test")) {
+					res.total++;
+					if (processTest(c, name))
+						res.passes++;
+				}
 			}
 		}
 
 		return res;
 	}
 
-	private static final boolean processList(String classes[]) {
-		boolean res = true;
+	private static final TestCounter processList(String classes[]) {
+		TestCounter res = new TestCounter();
 
 		for (int i=0; i<classes.length; i++)
-			res&= processClass(classes[i]);
+			res.add(processClass(classes[i]));
 
 		return res;
 	}
 
 	public static final void main(String args[]) {
-		boolean result;
+		TestCounter result;
 
 		System.out.println("!!!! Starting Crypto Tests !!!!");
 
@@ -115,11 +127,11 @@ public class RunAll {
 		else
 			result = RunAll.processList(args);
 
-		if (result)
-			System.out.println("!!!! All Tests Succeeded !!!!");
-		else
-			System.out.println("!!!! Ended In Failure !!!!");
-
-		System.exit(result ? 0 : 1);
+		if (result.total == result.passes) {
+			System.out.println("!!!! All " + Integer.toString(result.total) + " Tests Succeeded !!!! ");
+		} else {
+			System.out.println("!!!! Ended In Failure: " + Integer.toString(result.passes) + "/" + Integer.toString(result.total) + " Passed !!!!");
+			System.exit(1);
+		}
 	}
 }
