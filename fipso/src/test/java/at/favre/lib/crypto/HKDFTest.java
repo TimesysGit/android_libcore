@@ -67,7 +67,7 @@ public class HKDFTest extends TestCase {
 
     public void test_customHmac() throws Exception {
         //don't use md5, this is just an example
-        HKDF hkdfMd5 = HKDF.from(new HkdfMacFactory.Default("HmacMD5", Security.getProvider("SunJCE")));
+        HKDF hkdfMd5 = HKDF.from(new HkdfMacFactory.Default("HmacSHA1", Security.getProvider("OpenSSLFIPS")));
 
         byte[] lowEntropyInput = new byte[]{0x62, 0x58, (byte) 0x84, 0x2C};
         byte[] outputKeyingMaterial = hkdfMd5.extractAndExpand(null, lowEntropyInput, null, 32);

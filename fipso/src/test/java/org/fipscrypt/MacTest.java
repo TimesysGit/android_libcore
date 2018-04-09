@@ -31,7 +31,7 @@ public class MacTest extends TestCase {
         final String secret = "-HMAC-test1";
         final byte[] testString = "testing123".getBytes();
 
-        Provider p = Security.getProvider(OpenSSLProvider.PROVIDER_NAME);
+        Provider p = Security.getProvider(OpenSSLFIPSProvider.PROVIDER_NAME);
         NativeCryptoTest.loadTestEngine();
         OpenSSLEngine engine = OpenSSLEngine.getInstance(NativeCryptoTest.TEST_ENGINE_ID);
 

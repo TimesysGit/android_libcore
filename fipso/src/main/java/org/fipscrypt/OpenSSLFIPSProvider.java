@@ -19,7 +19,7 @@ package org.fipscrypt;
 import java.security.Provider;
 
 /**
- * Provider that goes through OpenSSL for operations.
+ * Provider that goes through OpenSSL-FIPS for operations.
  * <p>
  * Every algorithm should have its IANA assigned OID as an alias. See the following URLs for each type:
  * <ul>
@@ -28,13 +28,13 @@ import java.security.Provider;
  * <li><a href="http://csrc.nist.gov/groups/ST/crypto_apps_infra/csor/algorithms.html">NIST cryptographic algorithms</a></li>
  * </ul>
  */
-public final class OpenSSLProvider extends Provider {
-    private static final long serialVersionUID = 2996752495318905136L;
+public final class OpenSSLFIPSProvider extends Provider {
+    private static final long serialVersionUID = 2996752495318905137L;
 
-    public static final String PROVIDER_NAME = "AndroidOpenSSL";
+    public static final String PROVIDER_NAME = "OpenSSLFIPS";
 
-    public OpenSSLProvider() {
-        super(PROVIDER_NAME, 1.0, "Android's OpenSSL-backed security provider");
+    public OpenSSLFIPSProvider() {
+        super(PROVIDER_NAME, 1.0, "OpenSSL-FIPS-backed security provider");
 
         // Make sure the platform is initialized.
         Platform.setup();
@@ -73,9 +73,7 @@ public final class OpenSSLProvider extends Provider {
         put("MessageDigest.MD5", prefix + "OpenSSLMessageDigestJDK$MD5");
         put("Alg.Alias.MessageDigest.1.2.840.113549.2.5", "MD5");
         
-        // iso(1) member-body(2) US(840) rsadsi(113549) digestAlgorithm(2) md5(5)
         put("MessageDigest.MD5_FIPS", prefix + "OpenSSLMessageDigestJDK$MD5_FIPS");
-        put("Alg.Alias.MessageDigest.1.2.840.113549.2.5", "MD5_FIPS");
 
         /* == KeyPairGenerators == */
         put("KeyPairGenerator.RSA", prefix + "OpenSSLRSAKeyPairGenerator");

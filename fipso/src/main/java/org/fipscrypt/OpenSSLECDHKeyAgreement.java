@@ -150,7 +150,7 @@ public final class OpenSSLECDHKeyAgreement extends KeyAgreementSpi {
     private static OpenSSLKey translateKeyToEcOpenSSLKey(Key key) throws InvalidKeyException {
         try {
             return ((OpenSSLKeyHolder) KeyFactory.getInstance(
-                    "EC", OpenSSLProvider.PROVIDER_NAME).translateKey(key)).getOpenSSLKey();
+                    "EC", OpenSSLFIPSProvider.PROVIDER_NAME).translateKey(key)).getOpenSSLKey();
         } catch (Exception e) {
             throw new InvalidKeyException("Failed to translate key to OpenSSL EC key", e);
         }

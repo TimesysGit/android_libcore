@@ -22,7 +22,7 @@ public class HkdfMacFactoryTest extends TestCase {
     }
 
     public void test_customProvider() throws Exception {
-        testHmacFactory(new HkdfMacFactory.Default("HmacSHA1", Security.getProvider("SunJCE")), 20);
+        testHmacFactory(new HkdfMacFactory.Default("HmacSHA1", Security.getProvider("OpenSSLFIPS")), 20);
     }
 
     public void test_hmacInstanceNotExisting() throws Exception {

@@ -80,7 +80,7 @@ public class SignatureTest extends TestCase {
         };
 
         // We only need to test this on the OpenSSL provider.
-        Provider p = Security.getProvider(OpenSSLProvider.PROVIDER_NAME);
+        Provider p = Security.getProvider(OpenSSLFIPSProvider.PROVIDER_NAME);
 
         /* ENGINE-based private key */
         NativeCryptoTest.loadTestEngine();
