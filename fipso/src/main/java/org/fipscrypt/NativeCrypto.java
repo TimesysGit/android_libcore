@@ -43,17 +43,9 @@ import javax.security.auth.x500.X500Principal;
  */
 public final class NativeCrypto {
 
-    // --- OpenSSL library initialization --------------------------------------
+    // --- OpenSSL-FIPS library initialization ---------------------------------
     static {
-        /*
-         * If we're compiled as part of Android, should use a different JNI
-         * library name. Detect this by looking for the jarjar'd package name.
-         */
-        if ("com.android.org.fipscrypt".equals(NativeCrypto.class.getPackage().getName())) {
-            System.loadLibrary("javacrypto");
-        } else {
-            System.loadLibrary("fipscrypt_jni");
-        }
+        System.loadLibrary("javacrypto-fips");
 
         clinit();
     }
