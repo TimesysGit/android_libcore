@@ -178,6 +178,7 @@ LOCAL_SRC_FILES := $(call all-test-java-files-under,support)
 LOCAL_NO_STANDARD_LIBRARIES := true
 LOCAL_JAVA_LIBRARIES := bouncycastle core core-junit
 LOCAL_JAVACFLAGS := $(local_javac_flags)
+LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := core-tests-support-nonstatic
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
 include $(BUILD_JAVA_LIBRARY)
@@ -235,7 +236,7 @@ LOCAL_JAVA_LIBRARIES := core core-junit fipscrypt-nojarjar core-tests-support-no
 LOCAL_JAVACFLAGS := $(local_javac_flags)
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE := fipscrypt-tests-nonstatic
-LOCAL_REQUIRED_MODULES := libjavacrypto-fips
+LOCAL_REQUIRED_MODULES := libjavacrypto-fips libkeystore libjavacoretests core-tests-support-nonstatic
 LOCAL_JARJAR_RULES := $(LOCAL_PATH)/fipso/jarjar-rules.txt
 LOCAL_ADDITIONAL_DEPENDENCIES := $(LOCAL_PATH)/JavaLibrary.mk
 include $(BUILD_JAVA_LIBRARY)
